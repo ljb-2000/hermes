@@ -7,8 +7,8 @@ import (
 
 // FetchWebsiteChecksum downloads the resource at url,
 // and returns an fnv hash of its content.
-func FetchWebsiteChecksum(FetchWebsiteChecksum Fetcher, url string) (uint64, error) {
-	website, err := FetchWebsiteChecksum.Fetch(url)
+func FetchWebsiteChecksum(fetcher Fetcher, url string) (uint64, error) {
+	website, err := fetcher.Fetch(url)
 	if err != nil {
 		return 0, err
 	}
