@@ -9,7 +9,7 @@ import (
 
 // RunServer starts a web server on port 8080, which serves the
 // Hermes web interface
-func RunWebServer() {
+func RunWebServer(supervisor *AgentSupervisor) {
 	fs := http.FileServer(http.Dir("static"))
 
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
