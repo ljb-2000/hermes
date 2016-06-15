@@ -26,5 +26,4 @@ func FetchWebsiteChecksum(FetchWebsiteChecksum Fetcher, url string) (uint64, err
 // WebsiteChangeAgent records when the content of a
 // website has changed.
 type WebsiteChangeAgent struct {
-	lastChecksum uint64
 }
