@@ -28,6 +28,21 @@ func (s StubFetcher) Fetch(path string) (io.ReadCloser, error) {
 	return s.Reader, nil
 }
 
+func NewStubFetcher(content string) StubFetcher {
+	reader := ioutil.NopCloser(strings.NewReader(content))
+	return StubFetcher{reader}
+}
+
+type FetchRecorder struct {
+	Fetcher
+	Fetches []string
+}
+
+func (r *FetchRecorder) Fetch(path string) (io.ReadCloser, error) {
+	r.Fetches = append(r.Fetches, path)
+	return r.Fetcher.Fetch(path)
+}
+
 type BrokenReader struct{}
 
 func (b BrokenReader) Read([]byte) (int, error) {
@@ -40,7 +55,6 @@ func (b BrokenFetcher) Fetch(path string) (io.ReadCloser, error) {
 	return nil, errors.New("fetch on broken fetcher")
 }
 
-func NewStubFetcher(content string) StubFetcher {
-	reader := ioutil.NopCloser(strings.NewReader(content))
-	return StubFetcher{reader}
+func NewFetchRecorder(fetcher Fetcher) FetchRecorder {
+	return FetchRecorder{fetcher, []string{}}
 }

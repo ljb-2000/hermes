@@ -26,4 +26,20 @@ func FetchWebsiteChecksum(fetcher Fetcher, url string) (uint64, error) {
 // WebsiteChangeAgent records when the content of a
 // website has changed.
 type WebsiteChangeAgent struct {
+	events chan bool
+}
+
+func (w WebsiteChangeAgent) Events() chan bool {
+	return w.events
+}
+
+func (w *WebsiteChangeAgent) run() {
+	w.events <- true
+}
+
+func NewWebsiteChangeAgent(fetcher Fetcher) WebsiteChangeAgent {
+	events := make(chan bool)
+	agent := WebsiteChangeAgent{events}
+	go agent.run()
+	return agent
 }

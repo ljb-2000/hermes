@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"testing"
+	"time"
 )
 
 func TestFetcherReaderIsClosed(t *testing.T) {
@@ -51,12 +52,13 @@ func TestChecksumIsZeroWhenReadErrorOccurs(t *testing.T) {
 	}
 }
 
-func TestAgentMakesARequestWhenStarted() {
-	fetcher := NewStubFetcher("hello there")
-	agent := StartWebsiteChangeAgent(fetcher)
+func TestAgentMakesARequestWhenStarted(t *testing.T) {
+	recorder := NewFetchRecorder(NewStubFetcher("some content"))
+	agent := NewWebsiteChangeAgent(&recorder)
 
 	select {
-	case <-agent.Events:
-
+	case <-agent.Events():
+	case <-time.After(1 * time.Second):
+		t.Error("no event was sent at startup")
 	}
 }
