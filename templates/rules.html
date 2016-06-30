@@ -19,7 +19,6 @@
 
 			<div class="mdl-navigation mdl-layout--large-screens-only">
 				<a href="#" class="mdl-navigation__link">Rules</a>
-				<a href="#" class="mdl-navigation__link">Events</a>
 			</div>
 		</div>
 	</header>
@@ -27,12 +26,15 @@
 	<div class="mdl-layout__content">
 		<div class="mdl-grid">
 			<ul class="mdl-cell--4-col mdl-list">
+				{{ range .RuleNames }}
 				<li class="mdl-list__item">
 					<span class="mdl-list__item-primary-content">
 						<img class="mdl-list__item-icon" src="/static/images/bird.svg" />
-						Machine Learning on Twitter
+						{{ . }}
 					</span>
 				</li>
+				{{ end }}
+
 			</ul>
 		</div>
 	</div>
