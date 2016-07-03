@@ -3,7 +3,6 @@ package main
 import (
 	"io/ioutil"
 	"testing"
-	"time"
 )
 
 func TestFetcherReaderIsClosed(t *testing.T) {
@@ -56,9 +55,7 @@ func TestAgentMakesARequestWhenStarted(t *testing.T) {
 	recorder := NewFetchRecorder(NewStringFetcher("some content"))
 	agent := NewWebsiteChangeAgent(&recorder, "some name")
 
-	select {
-	case <-agent.Events():
-	case <-time.After(1 * time.Second):
+	if !agent.CheckForChange() {
 		t.Error("no event was sent at startup")
 	}
 
@@ -69,24 +66,27 @@ func TestAgentMakesARequestWhenStarted(t *testing.T) {
 
 func TestAgentSendsARequestWhenContentChanges(t *testing.T) {
 	fetcher := NewStringFetcher("initial content")
-	recorder := NewFetchRecorder(fetcher)
+	recorder := NewFetchRecorder(&fetcher)
 	agent := NewWebsiteChangeAgent(&recorder, "some name")
 
-	select {
-	case <-agent.Events():
-	case <-time.After(1 * time.Second):
-		t.Error("no initial event was sent")
+	if !agent.CheckForChange() {
+		t.Error("no event was sent at startup")
 	}
 
 	fetcher.SetContent("new content")
-
-	select {
-	case <-agent.Events():
-	case <-time.After(1 * time.Second):
-		t.Error("no event was sent after change")
+	if !agent.CheckForChange() {
+		t.Error("content change was not detected")
 	}
 }
 
 func TestAgentSendsNothingWhenNothingChanges(t *testing.T) {
-	select {}
+	fetcher := NewStringFetcher("initial content")
+	recorder := NewFetchRecorder(fetcher)
+	agent := NewWebsiteChangeAgent(&recorder, "some name")
+
+	agent.CheckForChange()
+
+	if agent.CheckForChange() {
+		t.Error("change detected when none occured")
+	}
 }

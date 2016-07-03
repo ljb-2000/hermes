@@ -29,14 +29,14 @@ type WebsiteChangeAgent struct {
 	fetcher Fetcher
 	events  chan bool
 	name    string
-	lastSum int64
+	lastSum uint64
 }
 
 func (w WebsiteChangeAgent) Events() chan bool {
 	return w.events
 }
 
-func (w *WebsiteChangeAgent) HasContentChanged() bool {
+func (w *WebsiteChangeAgent) CheckForChange() bool {
 	sum, err := FetchWebsiteChecksum(w.fetcher, w.name)
 	if err != nil {
 		panic("uh oh")
@@ -48,9 +48,9 @@ func (w *WebsiteChangeAgent) HasContentChanged() bool {
 	return false
 }
 
-func (w *WebsiteChangeAgent) run() {
+func (w *WebsiteChangeAgent) Run() {
 	for {
-		if w.HasContentChanged() {
+		if w.CheckForChange() {
 			w.events <- true
 		}
 	}
@@ -58,7 +58,11 @@ func (w *WebsiteChangeAgent) run() {
 
 func NewWebsiteChangeAgent(fetcher Fetcher, name string) WebsiteChangeAgent {
 	events := make(chan bool)
-	agent := WebsiteChangeAgent{fetcher, events, name}
-	go agent.run()
+	agent := WebsiteChangeAgent{
+		fetcher: fetcher,
+		events:  events,
+		name:    name,
+		lastSum: 0,
+	}
 	return agent
 }
