@@ -16,6 +16,13 @@ func (s AgentSupervisor) Agents() []Agent {
 	return s.agents
 }
 
+// Run runs all agents, and the supervisor itself.
+func (s AgentSupervisor) Run() {
+	for _, agent := range s.agents {
+		agent.Run()
+	}
+}
+
 // NewAgentSupervisor creates an agent supervisor
 func NewAgentSupervisor() AgentSupervisor {
 	return AgentSupervisor{}

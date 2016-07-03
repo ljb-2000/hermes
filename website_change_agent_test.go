@@ -53,7 +53,10 @@ func TestChecksumIsZeroWhenReadErrorOccurs(t *testing.T) {
 
 func TestAgentMakesARequestWhenStarted(t *testing.T) {
 	recorder := NewFetchRecorder(NewStringFetcher("some content"))
-	agent := NewWebsiteChangeAgent(&recorder, "some name")
+	agent := NewWebsiteChangeAgent(WebsiteChangeAgentConfig{
+		Fetcher: &recorder,
+		Name:    "some name",
+	})
 
 	if !agent.CheckForChange() {
 		t.Error("no event was sent at startup")
@@ -67,7 +70,10 @@ func TestAgentMakesARequestWhenStarted(t *testing.T) {
 func TestAgentSendsARequestWhenContentChanges(t *testing.T) {
 	fetcher := NewStringFetcher("initial content")
 	recorder := NewFetchRecorder(&fetcher)
-	agent := NewWebsiteChangeAgent(&recorder, "some name")
+	agent := NewWebsiteChangeAgent(WebsiteChangeAgentConfig{
+		Fetcher: &recorder,
+		Name:    "some name",
+	})
 
 	if !agent.CheckForChange() {
 		t.Error("no event was sent at startup")
@@ -82,7 +88,10 @@ func TestAgentSendsARequestWhenContentChanges(t *testing.T) {
 func TestAgentSendsNothingWhenNothingChanges(t *testing.T) {
 	fetcher := NewStringFetcher("initial content")
 	recorder := NewFetchRecorder(fetcher)
-	agent := NewWebsiteChangeAgent(&recorder, "some name")
+	agent := NewWebsiteChangeAgent(WebsiteChangeAgentConfig{
+		Fetcher: &recorder,
+		Name:    "some name",
+	})
 
 	agent.CheckForChange()
 

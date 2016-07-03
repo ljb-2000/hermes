@@ -4,6 +4,9 @@ import "testing"
 
 type testAgent struct{}
 
+func (t testAgent) Run() {
+}
+
 func (t testAgent) State() interface{} {
 	return 0
 }
