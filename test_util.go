@@ -20,17 +20,28 @@ func (c *CloseChecker) Close() error {
 	return nil
 }
 
+type StringFetcher struct {
+	content string
+}
+
+func (s *StringFetcher) SetContent(content string) {
+	s.content = content
+}
+
+func (s StringFetcher) Fetch(path string) (io.ReadCloser, error) {
+	return ioutil.NopCloser(strings.NewReader(s.content)), nil
+}
+
+func NewStringFetcher(content string) StringFetcher {
+	return StringFetcher{content}
+}
+
 type StubFetcher struct {
 	Reader io.ReadCloser
 }
 
-func (s StubFetcher) Fetch(path string) (io.ReadCloser, error) {
+func (s *StubFetcher) Fetch(name string) (io.ReadCloser, error) {
 	return s.Reader, nil
-}
-
-func NewStubFetcher(content string) StubFetcher {
-	reader := ioutil.NopCloser(strings.NewReader(content))
-	return StubFetcher{reader}
 }
 
 type FetchRecorder struct {
