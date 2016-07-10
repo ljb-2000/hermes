@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -24,6 +25,7 @@ type RegisteredAgent struct {
 	Agent
 	lastEventTime MaybeTime
 	name          string
+	mu            sync.Mutex
 }
 
 // Register adds an Agent to the set of supervised agents
@@ -42,16 +44,18 @@ func (s AgentSupervisor) Agents() []RegisteredAgent {
 
 // Run runs all agents, and the supervisor itself.
 func (s AgentSupervisor) Run() {
-	for _, agent := range s.agents {
-		go s.recordEvents(&agent)
-		go agent.Run()
+	for i := range s.agents {
+		go s.recordEvents(&s.agents[i])
+		go s.agents[i].Run()
 	}
 }
 
 func (s *AgentSupervisor) recordEvents(theAgent *RegisteredAgent) {
 	for _ = range theAgent.Events() {
 		fmt.Println("got event from agent", theAgent.name)
+		theAgent.mu.Lock()
 		theAgent.lastEventTime = MaybeTime{true, time.Now()}
+		theAgent.mu.Unlock()
 	}
 }
 

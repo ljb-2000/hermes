@@ -32,7 +32,7 @@
 					<tr>
 						<th class="mdl-data-table__cell--non-numeric">Icon</th>
 						<th class="mdl-data-table__cell--non-numeric">Name</th>
-						<th>Last Event Time</th>
+						<th>Time Since Event</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -43,13 +43,7 @@
 							</td>
 							<td class="mdl-data-table__cell--non-numeric">{{ $rule.Name }}</td>
 								
-							<td>
-								{{ if $rule.LastEventTime.Ok }}
-									{{ $rule.LastEventTIme.Time }}
-								{{ else }}
-									-
-								{{ end }}
-							</td>
+							<td>{{ $rule.TimeSinceEvent }}</td>
 						</tr>
 
 					{{ end }}

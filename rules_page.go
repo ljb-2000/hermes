@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"io"
+	"time"
 )
 
 type RulesPage struct {
@@ -10,8 +11,18 @@ type RulesPage struct {
 }
 
 type RuleViewModel struct {
-	Name          string
-	LastEventTime MaybeTime
+	Name           string
+	TimeSinceEvent string
+}
+
+func NewRuleViewModel(agent RegisteredAgent) RuleViewModel {
+	vm := RuleViewModel{}
+	vm.Name = agent.name
+	vm.TimeSinceEvent = "-"
+	if agent.lastEventTime.Ok {
+		vm.TimeSinceEvent = PrettyDuration(time.Since(agent.lastEventTime.Time))
+	}
+	return vm
 }
 
 func NewRulesPage(supervisor *AgentSupervisor) RulesPage {
@@ -22,7 +33,9 @@ func (p RulesPage) Rules() []RuleViewModel {
 	agents := p.supervisor.Agents()
 	vms := make([]RuleViewModel, len(agents))
 	for i, agent := range agents {
-		vms[i] = RuleViewModel{agent.name, agent.lastEventTime}
+		agent.mu.Lock()
+		vms[i] = NewRuleViewModel(agent)
+		agent.mu.Unlock()
 	}
 	return vms
 }
