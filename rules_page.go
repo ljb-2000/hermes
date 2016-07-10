@@ -5,17 +5,26 @@ import (
 	"io"
 )
 
-type RulesPage struct{}
-
-func NewRulesPage() RulesPage {
-	return RulesPage{}
+type RulesPage struct {
+	supervisor *AgentSupervisor
 }
 
-func (p RulesPage) RuleNames() []string {
-	return []string{
-		"XKCD",
-		"Simplycast",
+type RuleViewModel struct {
+	Name          string
+	LastEventTime MaybeTime
+}
+
+func NewRulesPage(supervisor *AgentSupervisor) RulesPage {
+	return RulesPage{supervisor}
+}
+
+func (p RulesPage) Rules() []RuleViewModel {
+	agents := p.supervisor.Agents()
+	vms := make([]RuleViewModel, len(agents))
+	for i, agent := range agents {
+		vms[i] = RuleViewModel{agent.name, agent.lastEventTime}
 	}
+	return vms
 }
 
 func (p RulesPage) Render(w io.Writer) {

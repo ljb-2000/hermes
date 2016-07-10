@@ -11,8 +11,8 @@ func main() {
 		Name:     "http://www.xkcd.com",
 		Interval: time.Minute,
 	})
-	supervisor.Register(&xkcd)
-	supervisor.Run()
+	supervisor.Register("XKCD update checker", &xkcd)
+	go supervisor.Run()
 
 	RunWebServer(&supervisor)
 }

@@ -1,25 +1,13 @@
-html, body {
-  background: #e0e0e0;
-}
-
-.main-table {
-  min-width: 60%;
-  max-width: 800px;
-  margin: 0 auto;
-  margin-top: 48px;
-}
-
-/* Material design icon font */
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(/static/fonts/icons/material-icons/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url(/static/fonts/icons/material-icons/MaterialIcons-Regular.woff2) format('woff2'),
-       url(/static/fonts/icons/material-icons/MaterialIcons-Regular.woff) format('woff'),
-       url(/static/fonts/icons/material-icons/MaterialIcons-Regular.ttf) format('truetype');
+       url(MaterialIcons-Regular.woff2) format('woff2'),
+       url(MaterialIcons-Regular.woff) format('woff'),
+       url(MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {

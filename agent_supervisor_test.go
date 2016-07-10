@@ -7,6 +7,10 @@ type testAgent struct{}
 func (t testAgent) Run() {
 }
 
+func (t testAgent) Events() chan Event {
+	return make(chan Event)
+}
+
 func (t testAgent) State() interface{} {
 	return 0
 }
@@ -14,13 +18,13 @@ func (t testAgent) State() interface{} {
 func TestAgentsCanBeRegistered(t *testing.T) {
 	supervisor := NewAgentSupervisor()
 	agent := testAgent{}
-	supervisor.Register(agent)
+	supervisor.Register("some name", agent)
 }
 
 func TestRegisteredAgentsCanBeAccessed(t *testing.T) {
 	supervisor := NewAgentSupervisor()
 	agent := testAgent{}
-	supervisor.Register(agent)
+	supervisor.Register("some name", agent)
 
 	registered := supervisor.Agents()
 
@@ -29,7 +33,7 @@ func TestRegisteredAgentsCanBeAccessed(t *testing.T) {
 		return
 	}
 
-	if registered[0] != agent {
+	if registered[0].Agent != agent {
 		t.Error("wrong agent registered")
 	}
 }

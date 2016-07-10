@@ -11,35 +11,51 @@
 	<link rel="stylesheet" href="/static/css/site.css" />
 </head>
 
-<body class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-	<header class="mdl-layout__header">
-		<div class="mdl-layout__header-row">
-			<span class="mdl-layout-title">Hermes</span>
-			<div class="mdl-layout-spacer"></div>
+<body>
+	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
-			<div class="mdl-navigation mdl-layout--large-screens-only">
-				<a href="#" class="mdl-navigation__link">Rules</a>
+		<header class="mdl-layout__header">
+			<div class="mdl-layout__header-row">
+				<span class="mdl-layout__title">Hermes</span>
+				<div class="mdl-layout-spacer"></div>
+
+				<div class="mdl-navigation">
+					<a href="#" class="mdl-navigation__link">Rules</a>
+				</div>
 			</div>
-		</div>
-	</header>
+		</header>
+		<div class="mdl-layout__drawer"></div>
 
-	<div class="mdl-layout__content">
-		<div class="mdl-grid">
-			<ul class="mdl-cell--4-col mdl-list">
-				{{ range .RuleNames }}
-				<li class="mdl-list__item">
-					<span class="mdl-list__item-primary-content">
-						<img class="mdl-list__item-icon" src="/static/images/bird.svg" />
-						{{ . }}
-					</span>
-				</li>
-				{{ end }}
+		<div class="mdl-layout__content">
+			<table class="main-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+				<thead>
+					<tr>
+						<th class="mdl-data-table__cell--non-numeric">Icon</th>
+						<th class="mdl-data-table__cell--non-numeric">Name</th>
+						<th>Last Event Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{ range $rule := .Rules }}
+						<tr>
+							<td class="mdl-data-table__cell--non-numeric">
+								<img class="mdl-list__item-icon" src="/static/images/bird.svg" />
+							</td>
+							<td class="mdl-data-table__cell--non-numeric">{{ $rule.Name }}</td>
+								
+							<td>
+								{{ if $rule.LastEventTime.Ok }}
+									{{ $rule.LastEventTIme.Time }}
+								{{ else }}
+									-
+								{{ end }}
+							</td>
+						</tr>
 
-			</ul>
+					{{ end }}
+			</table>
 		</div>
 	</div>
-
-
 	<script src="/static/js/material.min.js" type="text/javascript" charset="utf-8"></script>
 </body>
 
