@@ -34,7 +34,7 @@ func setFarFutureExpiresHeader(w http.ResponseWriter) {
 
 // RunWebServer starts a web server on port 8080, which serves the
 // Hermes web interface
-func RunWebServer(supervisor *AgentSupervisor) {
+func RunWebServer(app Application) {
 	fs := http.FileServer(http.Dir("static"))
 
 	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func RunWebServer(supervisor *AgentSupervisor) {
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		NewAgentsPage(supervisor).Render(w)
+		NewAgentsPage(app).Render(w)
 	})
 
 	fmt.Println("Listening on port :8080")

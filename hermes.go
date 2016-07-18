@@ -20,5 +20,7 @@ func main() {
 	supervisor.Register("Reddit updates", &reddit)
 	go supervisor.Run()
 
-	RunWebServer(&supervisor)
+	hermes := Hermes{supervisor}
+
+	RunWebServer(&hermes)
 }

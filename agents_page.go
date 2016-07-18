@@ -7,35 +7,36 @@ import (
 )
 
 type AgentsPage struct {
-	supervisor *AgentSupervisor
+	lister AgentLister
 }
 
 type AgentViewModel struct {
-	Name           string
-	TimeSinceEvent string
+	listing AgentListing
 }
 
-func NewAgentViewModel(agent RegisteredAgent) AgentViewModel {
-	vm := AgentViewModel{}
-	vm.Name = agent.name
-	vm.TimeSinceEvent = "-"
-	if agent.lastEventTime.Ok {
-		vm.TimeSinceEvent = PrettyDuration(time.Since(agent.lastEventTime.Time))
+func (vm AgentViewModel) Name() string {
+	return vm.listing.Name
+}
+
+// TimeSinceEvent returns a string formated representation of the time that
+// has passed since an agent yielded an event.
+func (vm AgentViewModel) TimeSinceEvent() string {
+	if vm.listing.LastEventTime.Ok {
+		return PrettyDuration(time.Since(vm.listing.LastEventTime.Time))
 	}
-	return vm
+	return "-"
 }
 
-func NewAgentsPage(supervisor *AgentSupervisor) AgentsPage {
-	return AgentsPage{supervisor}
+func NewAgentsPage(lister AgentLister) AgentsPage {
+	return AgentsPage{lister}
 }
 
+// Agents is the list of agents on tha page.
 func (p AgentsPage) Agents() []AgentViewModel {
-	agents := p.supervisor.Agents()
-	vms := make([]AgentViewModel, len(agents))
-	for i, agent := range agents {
-		agent.mu.Lock()
-		vms[i] = NewAgentViewModel(agent)
-		agent.mu.Unlock()
+	listings := p.lister.ListAgents()
+	vms := make([]AgentViewModel, len(listings))
+	for i, listing := range listings {
+		vms[i] = AgentViewModel{listing}
 	}
 	return vms
 }
