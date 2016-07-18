@@ -52,7 +52,7 @@ func RunWebServer(supervisor *AgentSupervisor) {
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		NewRulesPage(supervisor).Render(w)
+		NewAgentsPage(supervisor).Render(w)
 	})
 
 	fmt.Println("Listening on port :8080")

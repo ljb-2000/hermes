@@ -34,14 +34,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					{{ range $rule := .Rules }}
+					{{ range $agent := .Agents }}
 						<tr>
 							<td class="mdl-data-table__cell--non-numeric">
 								<img class="mdl-list__item-icon" src="/static/images/bird.svg" />
 							</td>
-							<td class="mdl-data-table__cell--non-numeric">{{ $rule.Name }}</td>
+							<td class="mdl-data-table__cell--non-numeric">{{ $agent.Name }}</td>
 								
-							<td>{{ $rule.TimeSinceEvent }}</td>
+							<td>{{ $agent.TimeSinceEvent }}</td>
 						</tr>
 
 					{{ end }}

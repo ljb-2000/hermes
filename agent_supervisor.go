@@ -22,16 +22,28 @@ type MaybeTime struct {
 // RegisteredAgent is an Agent, along with metadata related to the storage
 // and operation of that agent, as required by AgentSupervisor.
 type RegisteredAgent struct {
-	Agent
+	agent         Agent
 	lastEventTime MaybeTime
 	name          string
 	mu            sync.Mutex
 }
 
+func (r *RegisteredAgent) Name() string {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.name
+}
+
+func (r *RegisteredAgent) LastEventTime() MaybeTime {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.lastEventTime
+}
+
 // Register adds an Agent to the set of supervised agents
 func (s *AgentSupervisor) Register(theName string, theAgent Agent) {
 	s.agents = append(s.agents, RegisteredAgent{
-		Agent:         theAgent,
+		agent:         theAgent,
 		lastEventTime: MaybeTime{},
 		name:          theName,
 	})
@@ -46,12 +58,12 @@ func (s AgentSupervisor) Agents() []RegisteredAgent {
 func (s AgentSupervisor) Run() {
 	for i := range s.agents {
 		go s.recordEvents(&s.agents[i])
-		go s.agents[i].Run()
+		go s.agents[i].agent.Run()
 	}
 }
 
 func (s *AgentSupervisor) recordEvents(theAgent *RegisteredAgent) {
-	for _ = range theAgent.Events() {
+	for _ = range theAgent.agent.Events() {
 		fmt.Println("got event from agent", theAgent.name)
 		theAgent.mu.Lock()
 		theAgent.lastEventTime = MaybeTime{true, time.Now()}
